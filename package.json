@@ -39,7 +39,7 @@
       "package.json"
     ],
     "publish": [
-      { "provider": "github", "owner": "lavclash75", "repo": "htb" }
+      { "provider": "github", "owner": "lavclash75", "repo": "htb_app" }
     ],
     "artifactName": "${productName}.${ext}",
     "win": {
