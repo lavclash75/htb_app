@@ -1,0 +1,49 @@
+name: Build & Publish
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Sync version from tag safely (works on Win/Linux)
+      - name: Sync version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          node -e "
+            const fs=require('fs');
+            const p=require('./package.json');
+            const tag=(process.env.GITHUB_REF_NAME||'').replace(/^v/,'');
+            if(!tag){ console.log('No tag found'); process.exit(0); }
+            if(p.version!==tag){
+              p.version=tag;
+              fs.writeFileSync('package.json', JSON.stringify(p,null,2));
+              console.log('Version set to', tag);
+            } else {
+              console.log('Version already', tag);
+            }
+          "
+
+      - name: Build & publish
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --publish always

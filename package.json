@@ -1,0 +1,70 @@
+{
+  "name": "htb-electron-app",
+  "version": "1.0.0",
+  "description": "Hack The Box app",
+  "main": "main.js",
+  "author": { "name": "lavclash75", "email": "narcishachs@gmail.com" },
+  "license": "MIT",
+  "scripts": {
+    "start": "electron . --dev",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:publish": "electron-builder --publish always",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux"
+  },
+  "keywords": ["htb", "hackthebox", "electron", "desktop"],
+  "dependencies": {
+    "electron-log": "^5.4.2",
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.htb.desktop",
+    "productName": "HTB Desktop",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "publish": [
+      { "provider": "github", "owner": "lavclash75", "repo": "htb" }
+    ],
+    "artifactName": "${productName}.${ext}",
+    "win": {
+      "target": ["nsis"],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.developer-tools",
+      "hardenedRuntime": false
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility",
+      "icon": "assets/icon.png",
+      "maintainer": "lavclash75 <narcishachs@gmail.com>"
+    }
+  }
+}
